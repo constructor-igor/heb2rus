@@ -1,0 +1,5 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartArguments>..\..\Data\hebrewText.txt ..\..\Data\RussianText.txt</StartArguments>
+  </PropertyGroup>
+</Project>
