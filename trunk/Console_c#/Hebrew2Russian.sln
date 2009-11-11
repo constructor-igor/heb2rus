@@ -8,7 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{65CA5980-F63A-4C69-B096-33805B2D4477}"
 	ProjectSection(SolutionItems) = preProject
 		Hebrew2Russian.vsmdi = Hebrew2Russian.vsmdi
-		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+		LocalTest.testrunconfig = LocalTest.testrunconfig
 	EndProjectSection
 EndProject
 Global
