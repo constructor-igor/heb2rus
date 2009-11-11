@@ -16,6 +16,5 @@ namespace Hebrew2Russian
 
             File.WriteAllLines(textRussianFileName, russianTextContent);
         }
-
     }
 }

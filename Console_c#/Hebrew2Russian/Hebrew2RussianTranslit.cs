@@ -1,52 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Hebrew2Russian
 {
-    public class HebrewAlphabet
-    {        
-        public const char Alef = '\u05d0';
-        public const char Bet = '\u05d1';
-        public const char Gimel = '\u05d2';
-        public const char Dalet = '\u05d3';
-        public const char He = '\u05d4';
-        public const char Vav = '\u05d5';
-        public const char Zayin = '\u05d6';
-        public const char Het = '\u05d7';
-        public const char Tet = '\u05d8';
-        public const char Yod = '\u05d9';
-        public const char Kaf = '\u05db';
-        public const char FinalKaf = '\u05da';
-        public const char Lamed = '\u05dc';
-        public const char Mem = '\u05de';
-        public const char FinalMem = '\u05dd';
-        public const char Nun = '\u05e0';
-        public const char FinalNun = '\u05df';
-        public const char Samekh = '\u05e1';
-        public const char Ayin = '\u05e2';
-        public const char Pe = '\u05e4';
-        public const char FinalPe = '\u05e3';
-        public const char Tsadi = '\u05e6';
-        public const char FinalTsadi = '\u05e5'; 
-        public const char Qof = '\u05e7';
-        public const char Resh = '\u05e8';
-        public const char Shin = '\u05e9';
-        public const char Tav = '\u05ea';
-    }
-
-    public class RussianAlphabet
+    public class HebrewChar
     {
-        public const char a = '\u0430';
-        public const char b = '\u0431';
+        public char Character { get; private set; }
+        public HebrewChar(char character)
+        {
+            Character = character;
+        }
     }
-
     public class Hebrew2RussianCharTranslit
     {
-        public char HebrewChar { get; private set; }
-        public char RussianChar { get; private set; }
-        public Hebrew2RussianCharTranslit(char hebrewChar, char russianChar)
+        public HebrewChar HebrewChar { get; private set; }
+        public String RussianCharSet { get; private set; }
+        public Hebrew2RussianCharTranslit(char hebrewChar, char russianChar): this(hebrewChar, new string(russianChar, 1))
+        {            
+        }
+        public Hebrew2RussianCharTranslit(char hebrewChar, char[] russianCharSet): this(hebrewChar, new string(russianCharSet))
         {
-            HebrewChar = hebrewChar;
-            RussianChar = russianChar;
+        }
+        public Hebrew2RussianCharTranslit(char hebrewChar, string russianCharSet)
+        {
+            HebrewChar = new HebrewChar(hebrewChar);
+            RussianCharSet = russianCharSet;
         }
     }
     public class Hebrew2RussianTranslit
@@ -55,8 +33,46 @@ namespace Hebrew2Russian
 
         public Hebrew2RussianTranslit()
         {
-            rules.Add(new Hebrew2RussianCharTranslit(HebrewAlphabet.Alef, RussianAlphabet.a));
-            rules.Add(new Hebrew2RussianCharTranslit(HebrewAlphabet.Bet, RussianAlphabet.b));   
+            AddRule(HebrewAlphabet.Alef, "");
+            AddRule(HebrewAlphabet.Bet, RussianAlphabet.b);
+            AddRule(HebrewAlphabet.Gimel, RussianAlphabet.g);
+            AddRule(HebrewAlphabet.Dalet, RussianAlphabet.d);
+            //AddRule(HebrewAlphabet.He, new char[] {RussianAlphabet.xe, RussianAlphabet.eee, RussianAlphabet.i_kratkoe});
+            AddRule(HebrewAlphabet.He, "");
+            AddRule(HebrewAlphabet.Vav, RussianAlphabet.ve);
+            AddRule(HebrewAlphabet.Zayin, RussianAlphabet.z);
+            AddRule(HebrewAlphabet.Het, RussianAlphabet.xe);
+            AddRule(HebrewAlphabet.Tet, RussianAlphabet.t);
+            AddRule(HebrewAlphabet.Yod, RussianAlphabet.i_kratkoe);
+            AddRule(HebrewAlphabet.Kaf, RussianAlphabet.k);
+            AddRule(HebrewAlphabet.FinalKaf, RussianAlphabet.k);
+            AddRule(HebrewAlphabet.Lamed, RussianAlphabet.l);
+            AddRule(HebrewAlphabet.Mem, RussianAlphabet.m);
+            AddRule(HebrewAlphabet.FinalMem, RussianAlphabet.m);
+            AddRule(HebrewAlphabet.Nun, RussianAlphabet.n);
+            AddRule(HebrewAlphabet.FinalNun, RussianAlphabet.n);
+            AddRule(HebrewAlphabet.Samekh, RussianAlphabet.s);
+            AddRule(HebrewAlphabet.Ayin, RussianAlphabet.a);
+            AddRule(HebrewAlphabet.Pe, RussianAlphabet.p);
+            AddRule(HebrewAlphabet.FinalPe, RussianAlphabet.p);
+            AddRule(HebrewAlphabet.Tsadi, RussianAlphabet.tz);
+            AddRule(HebrewAlphabet.FinalTsadi, RussianAlphabet.tz);
+            AddRule(HebrewAlphabet.Qof, RussianAlphabet.k);
+            AddRule(HebrewAlphabet.Resh, RussianAlphabet.r);
+            AddRule(HebrewAlphabet.Shin, RussianAlphabet.she);
+            AddRule(HebrewAlphabet.Tav, RussianAlphabet.t);
+        }
+        void AddRule(char hebrewChar, string russianChar)
+        {
+            rules.Add(new Hebrew2RussianCharTranslit(hebrewChar, russianChar));
+        }
+        void AddRule(char hebrewChar, char russianChar)
+        {
+            rules.Add(new Hebrew2RussianCharTranslit(hebrewChar, russianChar));
+        }
+        void AddRule(char hebrewChar, char[] russianCharSet)
+        {
+            rules.Add(new Hebrew2RussianCharTranslit(hebrewChar, russianCharSet));
         }
         public string[] ConvertLines(string[] hebrewTextContent)
         {
@@ -73,11 +89,51 @@ namespace Hebrew2Russian
         public string ConvertLine(string hebrewLineContent)
         {
             string russianLineContent = "";
-            for (int j = 0; j < hebrewLineContent.Length; j++)
+
+            int position = 0;
+            while (position < hebrewLineContent.Length)
             {
-                char hebrewTextChar = hebrewLineContent[j];
-                Hebrew2RussianCharTranslit foundRule = FindRule(hebrewTextChar);
-                russianLineContent += foundRule.RussianChar;
+                char currentTextChar = hebrewLineContent[position++];
+                bool isHebrewCharacter = currentTextChar>=HebrewAlphabet.Alef && currentTextChar <= HebrewAlphabet.Tav;
+                if (isHebrewCharacter)
+                {
+                    HebrewChar currentChar = new HebrewChar(currentTextChar);
+                    Hebrew2RussianCharTranslit foundRule = FindRule(currentChar.Character);
+                    russianLineContent += foundRule.RussianCharSet;
+                } else
+                {
+                    string resultChar;
+                    switch (currentTextChar)
+                    {
+                        case Niqqud.Shva:
+                        case Niqqud.ReducedSegol:
+                        case Niqqud.Segol:
+                        case Niqqud.SinDot_left:
+                        case Niqqud.Dagesh:
+                        case Niqqud.SinDot_right:
+                            resultChar = "";
+                            break;
+                        case Niqqud.Hiriq:
+                            resultChar = new string(new char[] {RussianAlphabet.i});
+                            break;
+                        case Niqqud.ReducedPatach:
+                        case Niqqud.ReducedKamatz:
+                        case Niqqud.Patach:
+                        case Niqqud.Kamatz:
+                            resultChar = new string(new char[] {RussianAlphabet.a});
+                            break;
+                        case Niqqud.Zeire:
+                            resultChar = new string(new char[] {RussianAlphabet.e});
+                            break;
+                        case Niqqud.Kubutz:
+                            resultChar = new string(new char[] {RussianAlphabet.y});
+                            break;
+                        default:
+                            resultChar = new string(new char[] { currentTextChar });
+                            break;
+                    }
+                    russianLineContent += resultChar;
+                }
             }
             return russianLineContent;
         }
@@ -86,7 +142,7 @@ namespace Hebrew2Russian
         {
             foreach (Hebrew2RussianCharTranslit rule in rules)
             {
-                if (rule.HebrewChar == hebrewTextChar)
+                if (rule.HebrewChar.Character == hebrewTextChar)
                     return rule;
             }
             return new Hebrew2RussianCharTranslit(hebrewTextChar, hebrewTextChar);
